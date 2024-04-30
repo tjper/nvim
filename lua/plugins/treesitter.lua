@@ -5,6 +5,7 @@ end
 
 local syntaxes = {
   'comment',
+  'css',
   'c_sharp',
   'dockerfile',
   'go',
@@ -13,8 +14,12 @@ local syntaxes = {
   'http',
   'javascript',
   'jq',
+  'json',
   'lua',
   'make',
+  'markdown',
+  'markdown_inline',
+  'prisma',
   'python',
   'regex',
   'ruby',
@@ -24,6 +29,8 @@ local syntaxes = {
   'terraform',
   'tsx',
   'typescript',
+  'vim',
+  'vimdoc',
   'yaml',
 }
 

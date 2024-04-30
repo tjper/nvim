@@ -56,7 +56,33 @@ require('lazy').setup({
   { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
   { 'nvim-treesitter/nvim-treesitter-context' },
 
+  { 
+    'williamboman/mason.nvim',
+    config = function()
+      require('mason').setup()
+    end
+  },
+  { 
+    'williamboman/mason-lspconfig.nvim',
+    config = function()
+      require('mason-lspconfig').setup {
+        ensure_installed = { 
+          'dockerls',
+          'docker_compose_language_service',
+          'eslint',
+          'golangci_lint_ls',
+          'gopls',
+          'graphql',
+          'tsserver',
+          'bashls',
+          'tailwindcss',
+          'omnisharp',
+        },
+      }
+    end
+  },
   { 'neovim/nvim-lspconfig' },
+  { 'Hoffs/omnisharp-extended-lsp.nvim' },
 
   { 'hrsh7th/cmp-nvim-lsp' },
   { 'hrsh7th/cmp-buffer' },
@@ -107,7 +133,6 @@ require('lazy').setup({
   { 'tpope/vim-commentary' },
   { 'tpope/vim-abolish' },
   { 'tpope/vim-obsession' },
-  
   { 'mattn/emmet-vim', lazy = true },
 })
 
@@ -115,6 +140,7 @@ require('plugins/lspconfig')
 require('plugins/treesitter')
 require('plugins/cmp')
 require('plugins/noice')
+require('plugins/rest')
 
 -- smart search
 vim.opt.ignorecase = true
@@ -152,7 +178,20 @@ vim.opt.spell = false
 vim.opt.spelllang = { "en_us" }
 
 -- mouse and clipboard integration
-vim.opt.clipboard = "unnamedplus"
+in_wsl = os.getenv("WSL_DISTRO_NAME") ~= nil
+if in_wsl then
+  vim.g.clipboard = {
+    name = "WslClipboard",
+    copy = { ["+"] = { "clip.exe" }, ["*"] = { "clip.exe" } },
+    paste = {
+      ["+"] = { 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))' },
+      ["*"] = { 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))' },
+    },
+    cache_enabled = 0,
+  }
+else 
+  vim.g.clipboard = "unnamedplus"
+end
 vim.opt.mouse = "a"
 
 vim.opt.termguicolors = true   -- 24-bit RGB color in the TUI
@@ -246,12 +285,6 @@ end
 
 local autocmd = vim.api.nvim_create_autocmd
 
--- Format on save.
-autocmd('BufWritePre', {
-  callback = function()
-    vim.lsp.buf.format { async = true }
-  end,
-})
 -- On file save, organize imports in Go files.
 autocmd('BufWritePre', {
   callback = function()
