@@ -112,14 +112,6 @@ require('lazy').setup({
   { 'lukas-reineke/indent-blankline.nvim' },
   { 'RRethy/vim-illuminate' },
 
-  { 
-    'folke/noice.nvim', 
-    event = 'VeryLazy',
-    dependencies ={
-      'MunifTanjim/nui.nvim',
-      'rcarriga/nvim-notify',
-    }
-  },
   { 'folke/todo-comments.nvim' },
   { 'folke/which-key.nvim', lazy = true },
 
