@@ -114,6 +114,7 @@ require('lazy').setup({
 
   { 'folke/todo-comments.nvim' },
   { 'folke/which-key.nvim', lazy = true },
+  { 'folke/trouble.nvim' },
 
   { 'junegunn/vim-easy-align' },
   { 'Wansmer/treesj' },
@@ -131,8 +132,8 @@ require('lazy').setup({
 require('plugins/lspconfig')
 require('plugins/treesitter')
 require('plugins/cmp')
-require('plugins/noice')
 require('plugins/rest')
+require('plugins/trouble')
 
 -- smart search
 vim.opt.ignorecase = true
@@ -181,8 +182,6 @@ if in_wsl then
     },
     cache_enabled = 0,
   }
-else 
-  vim.g.clipboard = "unnamedplus"
 end
 vim.opt.mouse = "a"
 
@@ -248,15 +247,20 @@ map('n', '<c-n>', ':exe "vertical resize -30"<CR>', { noremap = true, silent = t
 vim.api.nvim_create_user_command('T', 'split | terminal', {})
 vim.api.nvim_create_user_command('VT', 'vsplit | terminal', {})
 
--- <Leader>c Close quickfix/location window
-map('n', '<leader>c', ':cclose<bar>lclose<cr>', { noremap = true, silent = false });
-
 -- delete without yanking
 map('n', '<leader>d', '_d', { noremap = true, silent = false });
 map('v', '<leader>d', '_d', { noremap = true, silent = false });
 
 -- replace currently selected text with default register without yanking it
 map('v', '<leader>p', '_dP', { noremap = true, silent = false });
+
+-- trouble keybindings
+map('n', '<leader>xx', '<cmd>Trouble diagnostics toggle<cr>', { noremap = true, silent = false });
+map('n', '<leader>xX', '<cmd>Trouble diagnostics toggle filter.buf=0<cr>', { noremap = true, silent = false });
+map('n', '<leader>cs', '<cmd>Trouble symbols toggle focus=false<cr>', { noremap = true, silent = false });
+map('n', '<leader>cl', '<cmd>Trouble lsp toggle focus=false win.position=right<cr>', { noremap = true, silent = false });
+map('n', '<leader>xL', '<cmd>Trouble loclist toggle<cr>', { noremap = true, silent = false });
+map('n', '<leader>xQ', '<cmd>Trouble qflist toggle<cr>', { noremap = true, silent = false });
 
 
 -- Pulled from https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-config
