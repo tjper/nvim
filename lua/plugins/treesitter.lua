@@ -32,6 +32,7 @@ local syntaxes = {
   'vim',
   'vimdoc',
   'yaml',
+  'cue',
 }
 
 treesitter_configs.setup({

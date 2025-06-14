@@ -73,7 +73,7 @@ require('lazy').setup({
           'golangci_lint_ls',
           'gopls',
           'graphql',
-          'tsserver',
+          'ts_ls',
           'bashls',
           'tailwindcss',
           'omnisharp',
@@ -99,7 +99,21 @@ require('lazy').setup({
   {
     'nvim-telescope/telescope.nvim',
     config = function()
-      require('telescope').load_extension('ultisnips');
+      require('telescope').setup{
+        defaults = {
+          mappings = {
+            n = {
+              ["<C-d>"] = require('telescope.actions').delete_buffer,
+            },
+            i = {
+              ["<C-d>"] = require('telescope.actions').delete_buffer,
+            }
+          } 
+        },
+        extensions = {
+          'ultisnips',
+        }
+      }
     end
   },
   { 'fhill2/telescope-ultisnips.nvim' },
@@ -107,10 +121,30 @@ require('lazy').setup({
   { 'tpope/vim-fugitive' },
   { 'nvim-lualine/lualine.nvim' },
   { 'nvim-tree/nvim-web-devicons' },
-  { 'github/copilot.vim', lazy = true },
+  { 'github/copilot.vim' },
   { 'norcalli/nvim-colorizer.lua' },
   { 'lukas-reineke/indent-blankline.nvim' },
   { 'RRethy/vim-illuminate' },
+  { 
+    'karb94/neoscroll.nvim',
+    config = function()
+      require('neoscroll').setup({
+        mappings = {'<C-u>', '<C-d>', '<C-b>', '<C-f>', '<C-y>', '<C-e>', 'zt', 'zz', 'zb'},
+        hide_cursor = true,          -- Hide cursor while scrolling
+        stop_eof = true,             -- Stop at <EOF> when scrolling downwards
+        respect_scrolloff = false,   -- Stop scrolling when the cursor reaches the scrolloff margin of the file
+        cursor_scrolls_alone = true, -- The cursor will keep on scrolling even if the window cannot scroll further
+        duration_multiplier = 1.0,   -- Global duration multiplier
+        easing = 'linear',           -- Default easing function
+        pre_hook = nil,              -- Function to run before the scrolling animation starts
+        post_hook = nil,             -- Function to run after the scrolling animation ends
+        performance_mode = false,    -- Disable "Performance Mode" on all buffers.
+        ignored_events = {           -- Events ignored while scrolling
+            'WinScrolled', 'CursorMoved'
+        },
+      })  
+    end
+  },
 
   { 'folke/todo-comments.nvim' },
   { 'folke/which-key.nvim', lazy = true },
@@ -127,6 +161,32 @@ require('lazy').setup({
   { 'tpope/vim-abolish' },
   { 'tpope/vim-obsession' },
   { 'mattn/emmet-vim', lazy = true },
+  {
+    "epwalsh/obsidian.nvim",
+    version = "*",  -- recommended, use latest release instead of latest commit
+    lazy = true,
+    ft = "markdown",
+    -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
+    -- event = {
+    --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
+    --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
+    --   -- refer to `:h file-pattern` for more examples
+    --   "BufReadPre ~/Obsidian/Grass/*.md",
+    --   "BufNewFile ~/Obsidian/Grass/*.md",
+    -- },
+    dependencies = {
+      -- Required.
+      "nvim-lua/plenary.nvim",
+    },
+    opts = {
+      workspaces = {
+        {
+          name = "Grass",
+          path = "~/Obsidian/Grass",
+        },
+      },
+    },
+  }
 })
 
 require('plugins/lspconfig')
@@ -138,6 +198,9 @@ require('plugins/trouble')
 -- smart search
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
+
+-- conceallevel
+vim.opt.conceallevel = 1
 
 -- tabs are two spaces
 vim.opt.tabstop = 2
@@ -202,15 +265,12 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 local map = vim.api.nvim_set_keymap
-map('n', '<C-F>', '<C-D>', { noremap = true, silent = false })
-map('n', '<C-B>', '<C-U>', { noremap = true, silent = false })
+map('n', '<leader><leader>', "<cmd>lua require('telescope.builtin').find_files()<cr>", { noremap = true, silent = false })
+map('n', '<leader>ag', "<cmd>lua require('telescope.builtin').live_grep()<cr>", { noremap = true, silent = false })
+map('n', '<leader>b', "<cmd>lua require('telescope.builtin').buffers()<cr>", { noremap = true, silent = false })
+map('n', '<leader>u',  "<cmd>lua require('telescope.builtin').ultisnips()<cr>", { noremap = true, silent = false })
 
-map('n', '<leader><leader>', '<cmd>Telescope find_files<cr>', { noremap = true, silent = false })
-map('n', '<leader>ag', '<cmd>Telescope live_grep<cr>', { noremap = true, silent = false })
-map('n', '<leader>b', '<cmd>Telescope buffers<cr>', { noremap = true, silent = false })
-map('n', '<leader>u', '<cmd>Telescope ultisnips<cr>', { noremap = true, silent = false })
-
--- Open new line below and above current line
+--setup. Open new line below and above current line
 map('n', '<leader>o', 'o<esc>', { noremap = true, silent = false })
 map('n', '<leader>O', 'O<esc>', { noremap = true, silent = false })
 

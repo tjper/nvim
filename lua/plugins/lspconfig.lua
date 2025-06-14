@@ -49,7 +49,7 @@ lspconfig.gopls.setup {
   capabilities = nvim_cmp,
 }
 
-lspconfig.tsserver.setup {
+lspconfig.ts_ls.setup {
   on_attach = on_attach,
   init_options = {documentFormatting = false},
   capabilities = nvim_cmp,
