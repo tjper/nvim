@@ -65,6 +65,11 @@ lspconfig.tailwindcss.setup{
   capabilities = nvim_cmp,
 }
 
+lspconfig.astro.setup{
+  on_attach = on_attach,
+  capabilities = nvim_cmp,
+}
+
 local pid = vim.fn.getpid()
 lspconfig.omnisharp.setup({
   on_attach = on_attach,

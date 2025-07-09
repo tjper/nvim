@@ -33,6 +33,7 @@ local syntaxes = {
   'vimdoc',
   'yaml',
   'cue',
+  'astro',
 }
 
 treesitter_configs.setup({

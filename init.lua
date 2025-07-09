@@ -55,11 +55,23 @@ require('lazy').setup({
   },
   { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
   { 'nvim-treesitter/nvim-treesitter-context' },
-
+  { 'davidmh/mdx.nvim', config = true },
+  {
+    "luckasRanarison/tailwind-tools.nvim",
+    name = "tailwind-tools",
+    build = ":UpdateRemotePlugins",
+    config = function()
+      require("tailwind-tools").setup()
+    end
+  },
   { 
     'williamboman/mason.nvim',
     config = function()
-      require('mason').setup()
+      require('mason').setup {
+        ensure_installed = {
+          'prettier',
+        },
+      }
     end
   },
   { 
@@ -77,6 +89,7 @@ require('lazy').setup({
           'bashls',
           'tailwindcss',
           'omnisharp',
+          'astro',
         },
       }
     end
@@ -89,10 +102,6 @@ require('lazy').setup({
   { 'hrsh7th/cmp-path' },
   { 'hrsh7th/cmp-cmdline' },
   { 'hrsh7th/nvim-cmp' },
-
-  { 'SirVer/ultisnips' },
-  { 'honza/vim-snippets' },
-  { 'quangnguyen30192/cmp-nvim-ultisnips' },
 
   { 'nvim-lua/popup.nvim' },
   { 'nvim-lua/plenary.nvim' },
@@ -270,7 +279,11 @@ map('n', '<leader>ag', "<cmd>lua require('telescope.builtin').live_grep()<cr>", 
 map('n', '<leader>b', "<cmd>lua require('telescope.builtin').buffers()<cr>", { noremap = true, silent = false })
 map('n', '<leader>u',  "<cmd>lua require('telescope.builtin').ultisnips()<cr>", { noremap = true, silent = false })
 
---setup. Open new line below and above current line
+map('n', '<leader><leader>', '<cmd>Telescope find_files<cr>', { noremap = true, silent = false })
+map('n', '<leader>ag', '<cmd>Telescope live_grep<cr>', { noremap = true, silent = false })
+map('n', '<leader>b', '<cmd>Telescope buffers<cr>', { noremap = true, silent = false })
+
+-- Open new line below and above current line
 map('n', '<leader>o', 'o<esc>', { noremap = true, silent = false })
 map('n', '<leader>O', 'O<esc>', { noremap = true, silent = false })
 
@@ -327,8 +340,13 @@ map('n', '<leader>xQ', '<cmd>Trouble qflist toggle<cr>', { noremap = true, silen
 -- Used to apply the "source.organizeImports" code action in Go files.
 function go_org_imports(wait_ms)
   local params = vim.lsp.util.make_range_params()
-  params.context = { only = { "source.organizeImports" } }
-  local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, wait_ms)
+  params.context = {only = {"source.organizeImports"}}
+  -- buf_request_sync defaults to a 1000ms timeout. Depending on your
+  -- machine and codebase, you may want longer. Add an additional
+  -- argument after params if you find that you have to write the file
+  -- twice for changes to be saved.
+  -- E.g., vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
+  local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
   for cid, res in pairs(result or {}) do
     for _, r in pairs(res.result or {}) do
       if r.edit then
@@ -337,12 +355,14 @@ function go_org_imports(wait_ms)
       end
     end
   end
+  vim.lsp.buf.format({async = false})
 end
 
 local autocmd = vim.api.nvim_create_autocmd
 
 -- On file save, organize imports in Go files.
 autocmd('BufWritePre', {
+  pattern = "*.go",
   callback = function()
     go_org_imports()
   end,
