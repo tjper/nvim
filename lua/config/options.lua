@@ -53,3 +53,4 @@ for k, v in pairs(options) do
 end
 
 vim.opt.shortmess:append({ C = true, c = true, I = true })
+vim.opt.clipboard:append("unnamedplus")
