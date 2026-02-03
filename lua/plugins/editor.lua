@@ -30,6 +30,27 @@ return {
     end
   },
   {
+    "oskarnurm/koda.nvim",
+    lazy = false, -- make sure we load this during startup if it is your main colorscheme
+    priority = 1000, -- make sure to load this before all the other start plugins
+    config = function()
+      -- require("koda").setup({ transparent = true })
+      vim.cmd("colorscheme koda")
+    end,
+  },
+  {
+    'sainnhe/everforest',
+    lazy = false,
+    priority = 1000,
+    config = function()
+      -- Optionally configure and load the colorscheme
+      -- directly inside the plugin declaration.
+      vim.g.everforest_enable_italic = true
+      vim.g.everforest_background = 'medium'
+      vim.g.everforest_ui_contrast= 'high'
+    end
+  },
+  {
     "EdenEast/nightfox.nvim",
     config = function()
       require("nightfox").setup({
@@ -41,8 +62,6 @@ return {
           },
         }
       })
-
-      vim.cmd.colorscheme("nightfox")
     end
   },
   {
