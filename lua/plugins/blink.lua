@@ -54,7 +54,11 @@ return {
             }
           },
         },
-        signature = { enabled = true }
+        signature = { enabled = true },
+        sources = {
+          default = { "avante" },
+          providers = { avante = { module = "blink-cmp-avante", name = "Avante" } },
+        }
       })
     end
   },

@@ -65,6 +65,39 @@ return {
     end
   },
   {
+    "yetone/avante.nvim",
+    build = vim.fn.has("win32") ~= 0
+      and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
+      or "make BUILD_FROM_SOURCE=true",
+    event = "VeryLazy",
+    lazy = true,
+    version = false,
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      "Kaiser-Yang/blink-cmp-avante",
+      {
+        -- Make sure to set this up properly if you have lazy=true
+        'MeanderingProgrammer/render-markdown.nvim',
+        opts = {
+          file_types = { "markdown", "Avante" },
+        },
+        ft = { "markdown", "Avante" },
+      },
+    },
+    opts = {
+      provider = "openrouter",
+      providers = {
+        openrouter = {
+          __inherited_from = "openai",
+          endpoint = "https://openrouter.ai/api/v1",
+          api_key_name = "AVANTE_OPENROUTER_API_KEY",
+          model = "moonshotai/kimi-k3",
+        }
+      },
+    }
+  },
+  {
     "nvim-treesitter/nvim-treesitter",
     config = function(_, _)
       local treesitter = require("nvim-treesitter.configs")
