@@ -56,9 +56,10 @@ return {
         },
         signature = { enabled = true },
         sources = {
-          default = { "avante" },
+          default = { "lsp", "path", "snippets", "buffer", "avante" },
           providers = { avante = { module = "blink-cmp-avante", name = "Avante" } },
         }
+
       })
     end
   },
